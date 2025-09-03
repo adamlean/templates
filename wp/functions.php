@@ -95,3 +95,42 @@ function register_custom_menus()
     ]);
 }
 add_action('after_setup_theme', 'register_custom_menus');
+
+// New Field
+
+// Create metabox
+function my_custom_field_add_meta_box()
+{
+    add_meta_box(
+        'my_custom_field_box', // ID
+        'Additional field', // Block title
+        'my_custom_field_callback', // Callback
+        'page', // Where to display (page, post or custom post type)
+        'normal', // Position
+        'high' // Priority
+    );
+}
+add_action('add_meta_boxes', 'my_custom_field_add_meta_box');
+
+// Render the field
+function my_custom_field_callback($post)
+{
+    $value = get_post_meta($post->ID, '_my_custom_field', true);
+?>
+    <label for="my_custom_field">Введите текст:</label>
+    <input type="text" name="my_custom_field" id="my_custom_field" value="<?php echo esc_attr($value); ?>" style="width:100%">
+<?php
+}
+
+// Save data
+function my_custom_field_save($post_id)
+{
+    if (array_key_exists('my_custom_field', $_POST)) {
+        update_post_meta(
+            $post_id,
+            '_my_custom_field',
+            sanitize_text_field($_POST['my_custom_field'])
+        );
+    }
+}
+add_action('save_post', 'my_custom_field_save');
