@@ -134,3 +134,21 @@ function my_custom_field_save($post_id)
     }
 }
 add_action('save_post', 'my_custom_field_save');
+
+// Register shortcode
+
+function subscription_form_shortcode()
+{
+    ob_start();
+?>
+    <form action="/subscribe" method="post">
+        <input type="email" name="email" placeholder="Ваш email" required>
+        <button type="submit">Подписаться</button>
+    </form>
+<?php
+    return ob_get_clean();
+}
+add_shortcode('subscription_form', 'subscription_form_shortcode');
+
+[subscription_form]
+
